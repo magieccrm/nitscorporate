@@ -21,16 +21,12 @@ function ManageEmployee() {
       );
       setDetail(responce?.data?.array);
     } catch (error) {
-      const message = await error?.response?.data?.message;
-      if (message == 'Client must be connected before running operations') {
-        getHigstNoOfCall();
-      }
+     
       console.log(error);
       setDetail(error.responce?.data?.array);
     }
   }
-
-  const GetUserCallAccordingToTeamLeader = async (assign_to_agent) => {
+ const GetUserCallAccordingToTeamLeader = async (assign_to_agent) => {
     try {
       const responce = await axios.post(
         `${apiUrl}/GetUserCallAccordingToTeamLeader`, {
@@ -44,10 +40,7 @@ function ManageEmployee() {
       );
       setDetail(responce?.data?.array);
     } catch (error) {
-      const message = await error?.response?.data?.message;
-      if (message == 'Client must be connected before running operations') {
-        GetUserCallAccordingToTeamLeader();
-      }
+     
       console.log(error);
       setDetail(error.responce?.data?.array);
     }
@@ -64,10 +57,6 @@ function ManageEmployee() {
     if (localStorage.getItem("role") === 'user') {
       getHigstNoOfCall();
     }
-
-
-
-    // dispatch(getAllAgent())
   }, []);
   const Refresh = () => {
     setTimeout(() => {

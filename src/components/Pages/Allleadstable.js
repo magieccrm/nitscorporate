@@ -149,7 +149,8 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
     });
     setfilterleads(result);
   }, [search]);
-  const isAdmin = localStorage.getItem("role") === "admin";
+  const isAdmin = localStorage.getItem("role") === "admin" || localStorage.getItem("role") === "TeamLeader";
+  const isAdmin1 = localStorage.getItem("role") === "admin";
   const commonColumns = [
     {
       name: "Name",
@@ -580,24 +581,18 @@ export const Allleadstable = ({ sendDataToParent, dataFromParent }) => {
         </table>
       ) : (
         <>
-          <button
-            className="btn btn-sm  shadow_btn btn-success ml-10"
-            onClick={exportToPDF}
-          >
-            Export PDF
-          </button>
+         
 
-          <button className="btn btn-sm shadow_btn btn-success" onClick={exportToExcel}>
-            Export Excel
-          </button>
-
-          {isAdmin ? (
-            <button className="btn shadow_btn btn-sm btn-danger" onClick={DeleteSelected}>
-              Delete
+          {
+            isAdmin1 ? (<><button className="btn btn-sm shadow_btn btn-success" onClick={exportToPDF}>Export PDF</button>
+            <button className="btn btn-sm shadow_btn btn-success" onClick={exportToExcel}>
+              Export Excel
             </button>
-          ) : (
-            <></>
-          )}
+          <button className="btn shadow_btn btn-sm btn-danger" onClick={DeleteSelected}>
+            Delete
+          </button></>
+              ) : (<></>)
+          }
           <DataTable
             responsive
             id="table-to-export"

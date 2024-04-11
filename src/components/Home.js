@@ -4,7 +4,7 @@ import randomcolor from 'randomcolor';
 import { Link } from "react-router-dom";
 import LineChart from "./LineChart";
 import LineChart1 from "./LineChart1";
-import { getAllAgent } from "../features/agentSlice";
+import { getAllAgent ,getAllAgentWithData } from "../features/agentSlice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Chart from 'react-apexcharts';
@@ -26,7 +26,7 @@ function Home() {
     const fetchData1 = async () => {
       try {
         await new Promise(resolve => setTimeout(resolve, 2000));
-        dispatch(getAllAgent());
+        // dispatch(getAllAgent());
         dispatch(getAllLeadSource())
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -34,10 +34,94 @@ function Home() {
     };
     fetchData1();
 
-    // getAllUnassignLead();
+    if (localStorage.getItem("role") === "admin") {
+      dispatch(getAllAgent()); 
+      getHigstNoOfCall();
+      getLeadCountData();
+    
+      AgentWishLeadCount1({role:localStorage.getItem("user_id"),user_id:localStorage.getItem("user_id")})
+    }
+    if (localStorage.getItem("role") === "TeamLeader") {
+    
+      DashboardLeadCountOfUserByTeamLeader();
+        dispatch(getAllAgentWithData({assign_to_agent:localStorage.getItem("user_id")}));
+        GetUserCallAccordingToTeamLeader(localStorage.getItem("user_id"))
+        AgentWishLeadCount1({role:localStorage.getItem("user_id"),user_id:localStorage.getItem("user_id")})
+      } 
+    else {
+      DashboardLeadCountOfUser();
+     dispatch(getAllAgent({assign_to_agent:localStorage.getItem("user_id")}));
+     getHigstNoOfCall();
+     AgentWishLeadCount1({role:localStorage.getItem("user_id"),user_id:localStorage.getItem("user_id")})
+    }
+
+   
 
 
   }, []);
+
+
+  const [Detail, setDetail] = useState([]);
+  const [LeadCount, setLeadCount] = useState([]);
+
+
+  const AgentWishLeadCount1 = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/AgentWishLeadCount1`, 
+        {role:localStorage.getItem("role"),user_id:localStorage.getItem("user_id")}, 
+        {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setLeadCount(responce?.data?.Count);
+    } catch (error) {
+     
+      console.log(error);
+      setLeadCount(error.responce?.data?.Count);
+    }
+  }
+
+  const getHigstNoOfCall = async () => {
+    try {
+      const responce = await axios.get(
+        `${apiUrl}/GetAllUserCallLogById/`, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setDetail(responce?.data?.array);
+    } catch (error) {
+     
+      console.log(error);
+      setDetail(error.responce?.data?.array);
+    }
+  }
+ const GetUserCallAccordingToTeamLeader = async (assign_to_agent) => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/GetUserCallAccordingToTeamLeader`, {
+        assign_to_agent,
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setDetail(responce?.data?.array);
+    } catch (error) {
+     
+      console.log(error);
+      setDetail(error.responce?.data?.array);
+    }
+  }
+
 
   const getSale = async () => {
     try {
@@ -75,10 +159,6 @@ function Home() {
       setleadsource(responce?.data?.Lead_source_name);
 
     } catch (error) {
-      const message = await error?.response?.data?.message;
-      if (message == 'Client must be connected before running operations' || message == 'Internal Server Error') {
-        getAllLeadSourceOverview();
-      }
       console.log(error);
     }
   }
@@ -96,13 +176,52 @@ function Home() {
       setleadcountdata(responce?.data?.Count);
     } catch (error) {
       const message = await error?.response?.data?.message;
-      console.log('djvjk', message);
-      if (message == 'Client must be connected before running operations' || message == 'Internal Server Error') {
-        getLeadCountData();
+       if (message == 'Client must be connected before running operations' || message == 'Internal Server Error') {
+       // getLeadCountData();
       }
       console.log(error);
     }
   }
+  const DashboardLeadCountOfUser = async (assign_to_agent) => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/DashboardLeadCountOfUser`, {
+          user_id:localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setleadcountdata(responce?.data?.Count);
+    } catch (error) {
+     
+      console.log(error);
+      setleadcountdata(error.responce?.data?.Count);
+    }
+  }
+  const DashboardLeadCountOfUserByTeamLeader = async (assign_to_agent) => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/DashboardLeadCountOfUserByTeamLeader`, {
+          user_id:localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setleadcountdata(responce?.data?.Count);
+    } catch (error) {
+     
+      console.log(error);
+      setleadcountdata(error.responce?.data?.Count);
+    }
+  }
+
+
 
   // const getAllUnassignLead=async()=>{
   //   try {
@@ -121,7 +240,6 @@ function Home() {
   // }
   useEffect(() => {
     getSale()
-    getLeadCountData();
     getAllLeadSourceOverview()
   }, []);
 
@@ -136,7 +254,7 @@ function Home() {
       <div className="content-wrapper">
         <section className="content py-5">
           <div className="container ">
-            <div className="row">
+            <div className="row d-none">
               <div className="col-12 col-lg-6 col-md-6 col-xl-6 pl-0 ">
                 <div className="cardbox02">
                   <div className="panel-body new_leads bd-panel">
@@ -466,32 +584,75 @@ function Home() {
                             </div>
                           </div>
                         </li>
-                        {agent?.agent?.map((agent1, key) => {
-                          return (
-                            <li className="mb-3 d-flex justify-content-between align-items-center">
-                              <div className="bg-label-success rounded">
-                                <img src="img/user_img.jpg" alt="User" className="rounded-circle me-3" width="28" />
-                              </div>
-                              <div className="d-flex justify-content-between w-100 flex-wrap">
-                                <h6 className="mb-0 ms-3">   {agent1.agent_name}</h6>
-                                <div className="d-flex">
-                                </div>
-                              </div>
-                              <div className="d-flex justify-content-between phone_btns w-100 flex-wrap">
-                                <h6 className="mb-0 ms-3"> <i className="fa fa-phone" aria-hidden="true"></i> 20  </h6>
-                                <div className="d-flex">
-                                </div>
-                              </div>
-                              <div className="d-flex  w-30">
-                                <h6 className="mb-0 ms-3">
-                                  <span className="badge badge-primary light border-0">0h 50m 2s</span></h6>
-                                <div className="d-flex">
-                                </div>
-                              </div>
-                            </li>
+                        {Detail?.map((Details, key) => {
+                               const converttime = (ffgfgf) => {
+                                const second = ffgfgf;
+                                const hours = Math.floor(second / 3600);
+                                const minutes = Math.floor((second % 3600) / 60);
+                                const remainingSeconds = second % 60;
+                                const timeconverted = hours + 'h ' + minutes + 'm ' + remainingSeconds + 's';
+                                return timeconverted;
+                              };
+                              // Check if the user is a 'user' or not
+                            const isUser = localStorage.getItem("role") === 'user';
 
+                            // Check if the Details.user_id matches the logged-in user's user_id
+                            const isCurrentUser = Details.user_id === localStorage.getItem("user_id");
 
-                          );
+                            if (isUser && isCurrentUser) {
+                              return (
+                                <li className="mb-3 d-flex justify-content-between align-items-center">
+                                <div className="bg-label-success rounded">
+                                  <img src="img/user_img.jpg" alt="User" className="rounded-circle me-3" width="28" />
+                                </div>
+                                <div className="d-flex justify-content-between w-100 flex-wrap">
+                                  <h6 className="mb-0 ms-3">   {Details?.username}</h6>
+                                  <div className="d-flex">
+                                  </div>
+                                </div>
+                                <div className="d-flex justify-content-between phone_btns w-100 flex-wrap">
+                                  <h6 className="mb-0 ms-3"> <i className="fa fa-phone" aria-hidden="true"></i> {Details?.HigstNoOfCall}  </h6>
+                                  <div className="d-flex">
+                                  </div>
+                                </div>
+                                <div className="d-flex  w-30">
+                                  <h6 className="mb-0 ms-3">
+                                    <span className="badge badge-primary light border-0">{converttime(Details?.TotalTime)}</span></h6>
+                                  <div className="d-flex">
+                                  </div>
+                                </div>
+                              </li>
+                              );
+                            } else if (!isUser) {
+                              // Render for non-user role
+                              return (
+                                <li className="mb-3 d-flex justify-content-between align-items-center">
+                                <div className="bg-label-success rounded">
+                                  <img src="img/user_img.jpg" alt="User" className="rounded-circle me-3" width="28" />
+                                </div>
+                                <div className="d-flex justify-content-between w-100 flex-wrap">
+                                  <h6 className="mb-0 ms-3">   {Details?.username}</h6>
+                                  <div className="d-flex">
+                                  </div>
+                                </div>
+                                <div className="d-flex justify-content-between phone_btns w-100 flex-wrap">
+                                  <h6 className="mb-0 ms-3"> <i className="fa fa-phone" aria-hidden="true"></i> {Details?.HigstNoOfCall}  </h6>
+                                  <div className="d-flex">
+                                  </div>
+                                </div>
+                                <div className="d-flex  w-30">
+                                  <h6 className="mb-0 ms-3">
+                                    <span className="badge badge-primary light border-0">{converttime(Details?.TotalTime)}</span></h6>
+                                  <div className="d-flex">
+                                  </div>
+                                </div>
+                              </li>
+                              );
+                            } else {
+                              return null; // Render nothing if not a user and not the current user
+                            }
+
+                        
                         })}
                       </ul>
                     </div>
@@ -533,14 +694,14 @@ function Home() {
 
 
                         </li>
-                        {agent?.agent?.map((agent1, key) => {
+                        {LeadCount?.map((LeadCount1, key) => {
                           return (
                             <li className="mb-3 d-flex justify-content-between align-items-center">
                               <div className="badge bg-label-secondaryess p-2 me-3 rounded svg-icons-prev">
                                 <i className="fab fa fa-user" aria-hidden="true"></i>
                               </div>
                               <div className="d-flex justify-content-between w-100 flex-wrap">
-                                <h6 className="mb-0 ms-3">   {agent1.agent_name}</h6>
+                                <h6 className="mb-0 ms-3">   {LeadCount1?.name}</h6>
                                 <div className="d-flex">
                                 </div>
                               </div>
@@ -550,7 +711,7 @@ function Home() {
                                 </div>
                               </div>
                               <div className="d-flex  w-30">
-                                <h6 className="mb-0 ms-3"> <span className="badge badge-primaryess light border-0">400</span></h6>
+                                <h6 className="mb-0 ms-3"> <span className="badge badge-primaryess light border-0">{LeadCount1?.Value}</span></h6>
                                 <div className="d-flex">
                                 </div>
                               </div>

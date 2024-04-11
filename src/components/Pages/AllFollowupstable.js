@@ -168,7 +168,8 @@ export default function AllFollowupstable({ sendDataToParent, dataFromParent }) 
     });
     setfilterleads(result);
   }, [search]);
-  const isAdmin = localStorage.getItem("role") === "admin";
+  const isAdmin = localStorage.getItem("role") === "admin" || localStorage.getItem("role") === "TeamLeader";
+  const isAdmin1 = localStorage.getItem("role") === "admin";
   const commonColumns = [
     {
       name: "Name",
@@ -605,14 +606,16 @@ export default function AllFollowupstable({ sendDataToParent, dataFromParent }) 
         </table>
       ) : (
         <>
-          <button className="btn btn-sm shadow_btn btn-success" onClick={exportToPDF}>Export PDF</button>
-          <button className="btn btn-sm shadow_btn btn-success" onClick={exportToExcel}>
-            Export Excel
-          </button>
+          
           {
-            isAdmin ? (<button className="btn shadow_btn btn-sm btn-danger" onClick={DeleteSelected}>
-              Delete
-            </button>) : (<></>)
+            isAdmin1 ? (<><button className="btn btn-sm shadow_btn btn-success" onClick={exportToPDF}>Export PDF</button>
+            <button className="btn btn-sm shadow_btn btn-success" onClick={exportToExcel}>
+              Export Excel
+            </button>
+          <button className="btn shadow_btn btn-sm btn-danger" onClick={DeleteSelected}>
+            Delete
+          </button></>
+              ) : (<></>)
           }
           <DataTable
             responsive
