@@ -136,7 +136,7 @@ function Home() {
       <div className="content-wrapper">
         <section className="content py-5">
           <div className="container ">
-            <div className="row">
+            <div className="row d-none">
               <div className="col-12 col-lg-6 col-md-6 col-xl-6 pl-0 ">
                 <div className="cardbox02">
                   <div className="panel-body new_leads bd-panel">
