@@ -40,10 +40,7 @@ export default function Incomereport() {
       setleadsource(responce?.data?.name);
 
     } catch (error) {
-      const message = await error?.response?.data?.message;
-      if (message == 'Client must be connected before running operations' || message == 'Internal Server Error') {
-        getAllLeadSourceOverview1();
-      }
+     
       console.log(error);
     }
   }
@@ -63,13 +60,7 @@ export default function Incomereport() {
       setleadsourcedata(response?.data?.value);
       setleadsource(response?.data?.name);
     } catch (error) {
-      const message = error?.response?.data?.message;
-      if (
-        message === 'Client must be connected before running operations' ||
-        message === 'Internal Server Error'
-      ) {
-        getAllLeadSourceOverview2();
-      }
+     
       console.error(error);
     }
   };
@@ -85,7 +76,7 @@ export default function Incomereport() {
       dispatch(getAllAgent());
       getAllLeadSourceOverview1();
      }
-     if (localStorage.getItem("role") === "TeamLeader") {
+     if (localStorage.getItem("role")==='TeamLeader') {   
       dispatch(getAllAgentWithData({assign_to_agent:localStorage.getItem("user_id")}));
       getAllLeadSourceOverview2({assign_to_agent:localStorage.getItem("user_id")});
     }

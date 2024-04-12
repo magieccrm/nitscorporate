@@ -21,10 +21,56 @@ const ChartComponent = () => {
         console.log(error);
       }
     } 
+    const IncomeGraphOverviewForTeamLeader=async ()=>{
+      try {
+        const responce = await axios.post(
+          `http://localhost:5000/api/v1/IncomeGraphOverviewForTeamLeader`,{
+            user_id:localStorage.getItem("user_id"),
+          }, {
+            headers: {
+              "Content-Type": "application/json",
+            }
+          }
+        );
+        setdata(responce?.data?.monthlyIncom);
+    
+        
+      } catch (error) {
+        console.log(error);
+      }
+    } 
+    const IncomeGraphOverviewForUser=async ()=>{
+      try {
+        const responce = await axios.post(
+          `http://localhost:5000/api/v1/IncomeGraphOverviewForUser`,{
+            user_id:localStorage.getItem("user_id"),
+          }, {
+            headers: {
+              "Content-Type": "application/json",
+            }
+          }
+        );
+        setdata(responce?.data?.monthlyIncom);
+    
+        
+      } catch (error) {
+        console.log(error);
+      }
+    } 
 
    useEffect(()=>{
-       
-    getAllLeadSourceOverview();
+    if (localStorage.getItem("role") === "admin") {
+      getAllLeadSourceOverview();
+    }
+    if (localStorage.getItem("role") === "TeamLeader") {
+      IncomeGraphOverviewForTeamLeader();
+    }
+    if (localStorage.getItem("role") === "user") {
+      IncomeGraphOverviewForUser();
+    }
+   
+   
+   
    },[])
    
   return (

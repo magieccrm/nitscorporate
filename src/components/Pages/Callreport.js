@@ -35,24 +35,40 @@ export default function Callreport() {
      
       console.log(responce?.data?.monthlyIncom);
     } catch (error) {
-      const message=await error?.response?.data?.message;
-      console.log('ddd',message)
-      if(message=='Client must be connected before running operations'  || message=='Internal Server Error'){
-        getAllCallDetails();
-      }
+     
+      console.log(error);
+    }
+  };
+
+  const getAllCallDetailsTeam = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/GetAllUserCallLogByIdTeam`,{ assign_to_agent: localStorage.getItem('user_id') },{
+          headers:{
+            "Content-Type": "application/json",
+            "mongodb-url":DBuUrl,
+          }
+        }
+      );
+      setdata(responce?.data?.username);
+      setdata1(responce?.data?.value);
+     
+      console.log(responce?.data?.monthlyIncom);
+    } catch (error) {
+     
       console.log(error);
     }
   };
 
   useEffect(() => {
-      getAllCallDetails();
-    // dispatch(getAllAgent());
     if(localStorage.getItem("role")==='admin'){
       dispatch(getAllAgent());
+      getAllCallDetails();
      }
      if (localStorage.getItem("role") === "TeamLeader") {
       dispatch(getAllAgentWithData({assign_to_agent:localStorage.getItem("user_id")}));
-    }
+      getAllCallDetailsTeam();
+    } 
     if(localStorage.getItem("role")==='user'){
       dispatch(getAllAgent({assign_to_agent:localStorage.getItem("user_id")}));
      }
@@ -177,7 +193,7 @@ export default function Callreport() {
                 <div className="panel-body pt-2">
                   <div className="panel-headinges panel panel-bd lobidrag lobipanel">
                     <div className="custom-card-header  bg-white">
-                      <h4>Income Report</h4>
+                      <h4>Call Report</h4>
                     </div>
                     <div className="pt-3">
                       <div className="bg-white">
