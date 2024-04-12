@@ -4,7 +4,7 @@ import randomcolor from 'randomcolor';
 import { Link } from "react-router-dom";
 import LineChart from "./LineChart";
 import LineChart1 from "./LineChart1";
-import { getAllAgent ,getAllAgentWithData } from "../features/agentSlice";
+import { getAllAgent, getAllAgentWithData } from "../features/agentSlice";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Chart from 'react-apexcharts';
@@ -35,27 +35,29 @@ function Home() {
     fetchData1();
 
     if (localStorage.getItem("role") === "admin") {
-      dispatch(getAllAgent()); 
+      dispatch(getAllAgent());
       getHigstNoOfCall();
       getLeadCountData();
-    
-      AgentWishLeadCount1({role:localStorage.getItem("user_id"),user_id:localStorage.getItem("user_id")})
+
+      AgentWishLeadCount1({ role: localStorage.getItem("user_id"), user_id: localStorage.getItem("user_id") })
     }
     if (localStorage.getItem("role") === "TeamLeader") {
-    
       DashboardLeadCountOfUserByTeamLeader();
-        dispatch(getAllAgentWithData({assign_to_agent:localStorage.getItem("user_id")}));
-        GetUserCallAccordingToTeamLeader(localStorage.getItem("user_id"))
-        AgentWishLeadCount1({role:localStorage.getItem("user_id"),user_id:localStorage.getItem("user_id")})
-      } 
-    else {
-      DashboardLeadCountOfUser();
-     dispatch(getAllAgent({assign_to_agent:localStorage.getItem("user_id")}));
-     getHigstNoOfCall();
-     AgentWishLeadCount1({role:localStorage.getItem("user_id"),user_id:localStorage.getItem("user_id")})
+      dispatch(getAllAgentWithData({ assign_to_agent: localStorage.getItem("user_id") }));
+      GetUserCallAccordingToTeamLeader(localStorage.getItem("user_id"))
+      AgentWishLeadCount1({ role: localStorage.getItem("user_id"), user_id: localStorage.getItem("user_id") })
     }
+    if (localStorage.getItem("role") === "user") {
+      DashboardLeadCountOfUser();
+      dispatch(getAllAgent({ assign_to_agent: localStorage.getItem("user_id") }));
+      getHigstNoOfCall();
+      AgentWishLeadCount1({ role: localStorage.getItem("user_id"), user_id: localStorage.getItem("user_id") })
+    }
+    // else {
 
-   
+    // }
+
+
 
 
   }, []);
@@ -68,18 +70,18 @@ function Home() {
   const AgentWishLeadCount1 = async () => {
     try {
       const responce = await axios.post(
-        `${apiUrl}/AgentWishLeadCount1`, 
-        {role:localStorage.getItem("role"),user_id:localStorage.getItem("user_id")}, 
+        `${apiUrl}/AgentWishLeadCount1`,
+        { role: localStorage.getItem("role"), user_id: localStorage.getItem("user_id") },
         {
-        headers: {
-          "Content-Type": "application/json",
-          "mongodb-url": DBuUrl,
+          headers: {
+            "Content-Type": "application/json",
+            "mongodb-url": DBuUrl,
+          }
         }
-      }
       );
       setLeadCount(responce?.data?.Count);
     } catch (error) {
-     
+
       console.log(error);
       setLeadCount(error.responce?.data?.Count);
     }
@@ -97,12 +99,12 @@ function Home() {
       );
       setDetail(responce?.data?.array);
     } catch (error) {
-     
+
       console.log(error);
       setDetail(error.responce?.data?.array);
     }
   }
- const GetUserCallAccordingToTeamLeader = async (assign_to_agent) => {
+  const GetUserCallAccordingToTeamLeader = async (assign_to_agent) => {
     try {
       const responce = await axios.post(
         `${apiUrl}/GetUserCallAccordingToTeamLeader`, {
@@ -116,7 +118,7 @@ function Home() {
       );
       setDetail(responce?.data?.array);
     } catch (error) {
-     
+
       console.log(error);
       setDetail(error.responce?.data?.array);
     }
@@ -176,17 +178,17 @@ function Home() {
       setleadcountdata(responce?.data?.Count);
     } catch (error) {
       const message = await error?.response?.data?.message;
-       if (message == 'Client must be connected before running operations' || message == 'Internal Server Error') {
-       // getLeadCountData();
+      if (message == 'Client must be connected before running operations' || message == 'Internal Server Error') {
+        // getLeadCountData();
       }
       console.log(error);
     }
   }
-  const DashboardLeadCountOfUser = async (assign_to_agent) => {
+  const DashboardLeadCountOfUser = async () => {
     try {
       const responce = await axios.post(
         `${apiUrl}/DashboardLeadCountOfUser`, {
-          user_id:localStorage.getItem("user_id"),
+        user_id: localStorage.getItem("user_id"),
       }, {
         headers: {
           "Content-Type": "application/json",
@@ -196,16 +198,16 @@ function Home() {
       );
       setleadcountdata(responce?.data?.Count);
     } catch (error) {
-     
+
       console.log(error);
       setleadcountdata(error.responce?.data?.Count);
     }
   }
-  const DashboardLeadCountOfUserByTeamLeader = async (assign_to_agent) => {
+  const DashboardLeadCountOfUserByTeamLeader = async () => {
     try {
       const responce = await axios.post(
         `${apiUrl}/DashboardLeadCountOfUserByTeamLeader`, {
-          user_id:localStorage.getItem("user_id"),
+        user_id: localStorage.getItem("user_id"),
       }, {
         headers: {
           "Content-Type": "application/json",
@@ -215,7 +217,7 @@ function Home() {
       );
       setleadcountdata(responce?.data?.Count);
     } catch (error) {
-     
+
       console.log(error);
       setleadcountdata(error.responce?.data?.Count);
     }
@@ -295,7 +297,7 @@ function Home() {
                         </div></Link>
                       </div>
                     ) : leadcountdata1?.name === 'Total Agent' ? (
-                      localStorage.getItem("role") === 'admin' ? ( 
+                      localStorage.getItem("role") === 'admin' ? (
                         <div className="col-xs-6 col-sm-6 col-md-6 pl-0 dashboard-fixeds col-lg-4" key={index}>
                           <Link to="/Setting">    <div className={`buttons-30 border-lefts${index + 1} mb-4`} role="button">
                             <div className="text-center pt-3">
@@ -306,7 +308,7 @@ function Home() {
                               <p className="text-slate-500 dark:text-zink-200">{leadcountdata1?.Value}</p>
                             </div>
                           </div></Link>
-                        </div> 
+                        </div>
                       ) : (<div className="col-xs-6 col-sm-6 col-md-6 pl-0 dashboard-fixeds col-lg-4" key={index}>
                         <Link to="#">    <div className={`buttons-30 border-lefts${index + 1} mb-4`} role="button">
                           <div className="text-center pt-3">
@@ -585,23 +587,23 @@ function Home() {
                           </div>
                         </li>
                         {Detail?.map((Details, key) => {
-                               const converttime = (ffgfgf) => {
-                                const second = ffgfgf;
-                                const hours = Math.floor(second / 3600);
-                                const minutes = Math.floor((second % 3600) / 60);
-                                const remainingSeconds = second % 60;
-                                const timeconverted = hours + 'h ' + minutes + 'm ' + remainingSeconds + 's';
-                                return timeconverted;
-                              };
-                              // Check if the user is a 'user' or not
-                            const isUser = localStorage.getItem("role") === 'user';
+                          const converttime = (ffgfgf) => {
+                            const second = ffgfgf;
+                            const hours = Math.floor(second / 3600);
+                            const minutes = Math.floor((second % 3600) / 60);
+                            const remainingSeconds = second % 60;
+                            const timeconverted = hours + 'h ' + minutes + 'm ' + remainingSeconds + 's';
+                            return timeconverted;
+                          };
+                          // Check if the user is a 'user' or not
+                          const isUser = localStorage.getItem("role") === 'user';
 
-                            // Check if the Details.user_id matches the logged-in user's user_id
-                            const isCurrentUser = Details.user_id === localStorage.getItem("user_id");
+                          // Check if the Details.user_id matches the logged-in user's user_id
+                          const isCurrentUser = Details.user_id === localStorage.getItem("user_id");
 
-                            if (isUser && isCurrentUser) {
-                              return (
-                                <li className="mb-3 d-flex justify-content-between align-items-center">
+                          if (isUser && isCurrentUser) {
+                            return (
+                              <li className="mb-3 d-flex justify-content-between align-items-center">
                                 <div className="bg-label-success rounded">
                                   <img src="img/user_img.jpg" alt="User" className="rounded-circle me-3" width="28" />
                                 </div>
@@ -622,11 +624,11 @@ function Home() {
                                   </div>
                                 </div>
                               </li>
-                              );
-                            } else if (!isUser) {
-                              // Render for non-user role
-                              return (
-                                <li className="mb-3 d-flex justify-content-between align-items-center">
+                            );
+                          } else if (!isUser) {
+                            // Render for non-user role
+                            return (
+                              <li className="mb-3 d-flex justify-content-between align-items-center">
                                 <div className="bg-label-success rounded">
                                   <img src="img/user_img.jpg" alt="User" className="rounded-circle me-3" width="28" />
                                 </div>
@@ -647,12 +649,12 @@ function Home() {
                                   </div>
                                 </div>
                               </li>
-                              );
-                            } else {
-                              return null; // Render nothing if not a user and not the current user
-                            }
+                            );
+                          } else {
+                            return null; // Render nothing if not a user and not the current user
+                          }
 
-                        
+
                         })}
                       </ul>
                     </div>
