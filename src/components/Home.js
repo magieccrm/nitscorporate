@@ -58,7 +58,7 @@ function Home() {
       getHigstNoOfCall();
       AgentWishLeadCount1({ role: localStorage.getItem("user_id"), user_id: localStorage.getItem("user_id") })
     }
-  
+
 
 
 
@@ -141,7 +141,7 @@ function Home() {
       setSale(responce?.data?.details);
 
     } catch (error) {
-      
+
       console.log(error);
     }
   };
@@ -162,10 +162,10 @@ function Home() {
     } catch (error) {
 
       console.log(error);
-    
+
     }
   }
-   const YearlySaleApiForUser = async () => {
+  const YearlySaleApiForUser = async () => {
     try {
       const responce = await axios.post(
         `${apiUrl}/YearlySaleApiForUser`, {
@@ -181,7 +181,7 @@ function Home() {
     } catch (error) {
 
       console.log(error);
-    
+
     }
   }
 
@@ -220,10 +220,10 @@ function Home() {
     } catch (error) {
 
       console.log(error);
-    
+
     }
   }
-   const LeadSourceOverviewApiForUser = async () => {
+  const LeadSourceOverviewApiForUser = async () => {
     try {
       const responce = await axios.post(
         `${apiUrl}/LeadSourceOverviewApiForUser`, {
@@ -240,7 +240,7 @@ function Home() {
     } catch (error) {
 
       console.log(error);
-    
+
     }
   }
 
@@ -364,7 +364,7 @@ function Home() {
                   leadcountdata?.map((leadcountdata1, index) => (
                     leadcountdata1?.name === 'Followup Lead' ? (
                       <div className="col-xs-6 col-sm-6 col-md-6 pl-0 dashboard-fixeds col-lg-4" key={index}>
-                        <Link to="/leads">  <div className={`buttons-30 border-lefts${index + 1} mb-4`} role="button">
+                        <Link to="/followupleads">  <div className={`buttons-30 border-lefts${index + 1} mb-4`} role="button">
                           <div className="text-center pt-3">
                             <div className="flex items-center justify-center mx-auto text-red-500 bg-red-100 rounded-full size-14 dark:bg-red-500/20">
                               <i className="fa fa-solid fa-users text-red-500"></i>
@@ -401,7 +401,7 @@ function Home() {
 
                     ) : (
                       <div className="col-xs-6 col-sm-6 col-md-6 pl-0 dashboard-fixeds col-lg-4" key={index}>
-                        <Link to="/followupleads">    <div className={`button-30 border-lefts${index + 1} mb-4`} role="button">
+                        <Link to={`/ImpSchedule/${leadcountdata1?.id}`}>    <div className={`button-30 border-lefts${index + 1} mb-4`} role="button">
                           <div className="text-center pt-3">
                             <div className="flex items-center justify-center mx-auto text-red-500 1 bg-custom-100 rounded-full size-14 dark:bg-red-500/20">
                               {index == 3 ? (<i className={`fa fa-solid fa-lightbulb-o text-custom-500 2`}>
@@ -415,7 +415,6 @@ function Home() {
                             <p className="text-slate-500 dark:text-zink-200">{leadcountdata1?.Value} - {leadcountdata1?.Value1}</p>
                           </div>
                         </div></Link>
-
                       </div>
 
                     )
