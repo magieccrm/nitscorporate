@@ -35,27 +35,30 @@ function Home() {
     fetchData1();
 
     if (localStorage.getItem("role") === "admin") {
+      getSale()
+      getAllLeadSourceOverview()
       dispatch(getAllAgent());
       getHigstNoOfCall();
       getLeadCountData();
-
       AgentWishLeadCount1({ role: localStorage.getItem("user_id"), user_id: localStorage.getItem("user_id") })
     }
     if (localStorage.getItem("role") === "TeamLeader") {
+      YearlySaleApiForTeamLeader()
+      LeadSourceOverviewApiForTeamLeader()
       DashboardLeadCountOfUserByTeamLeader();
       dispatch(getAllAgentWithData({ assign_to_agent: localStorage.getItem("user_id") }));
       GetUserCallAccordingToTeamLeader(localStorage.getItem("user_id"))
       AgentWishLeadCount1({ role: localStorage.getItem("user_id"), user_id: localStorage.getItem("user_id") })
     }
     if (localStorage.getItem("role") === "user") {
+      YearlySaleApiForUser()
+      LeadSourceOverviewApiForUser()
       DashboardLeadCountOfUser();
       dispatch(getAllAgent({ assign_to_agent: localStorage.getItem("user_id") }));
       getHigstNoOfCall();
       AgentWishLeadCount1({ role: localStorage.getItem("user_id"), user_id: localStorage.getItem("user_id") })
     }
-    // else {
-
-    // }
+  
 
 
 
@@ -138,13 +141,49 @@ function Home() {
       setSale(responce?.data?.details);
 
     } catch (error) {
-      const message = await error?.response?.data?.message;
-      if (message == 'Client must be connected before running operations' || message == 'Internal Server Error') {
-        getSale();
-      }
+      
       console.log(error);
     }
   };
+
+  const YearlySaleApiForTeamLeader = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/YearlySaleApiForTeamLeader`, {
+        user_id: localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setSale(responce?.data?.details);
+    } catch (error) {
+
+      console.log(error);
+    
+    }
+  }
+   const YearlySaleApiForUser = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/YearlySaleApiForUser`, {
+        user_id: localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setSale(responce?.data?.details);
+    } catch (error) {
+
+      console.log(error);
+    
+    }
+  }
 
   const getAllLeadSourceOverview = async () => {
     try {
@@ -164,6 +203,48 @@ function Home() {
       console.log(error);
     }
   }
+  const LeadSourceOverviewApiForTeamLeader = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/LeadSourceOverviewApiForTeamLeader`, {
+        user_id: localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setleadsourcedata(responce?.data?.Lead_source_count);
+      setleadsource(responce?.data?.Lead_source_name);
+    } catch (error) {
+
+      console.log(error);
+    
+    }
+  }
+   const LeadSourceOverviewApiForUser = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/LeadSourceOverviewApiForUser`, {
+        user_id: localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setleadsourcedata(responce?.data?.Lead_source_count);
+      setleadsource(responce?.data?.Lead_source_name);
+    } catch (error) {
+
+      console.log(error);
+    
+    }
+  }
+
+
   const [leadcountdata, setleadcountdata] = useState({});
   const getLeadCountData = async () => {
     try {
@@ -240,10 +321,7 @@ function Home() {
   //     console.log(error);
   //   }
   // }
-  useEffect(() => {
-    getSale()
-    getAllLeadSourceOverview()
-  }, []);
+
 
   const colors = randomcolor({ count: leadsourcedata1.length });
   const options = {
