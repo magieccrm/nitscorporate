@@ -52,6 +52,7 @@ import HistoryWtsp from './components/Pages/HistoryWtsp';
 import NewLead from './components/Pages/NewLead';
 import UploadDataDetails from './components/Pages/UploadDataDetails';
 import Housingapi from './components/Pages/Housingapi';
+import ImpSchedule from './components/Pages/ImpSchedule';
   function App() { 
     const [isLoading, setIsLoading] = useState(true);
     const [isLogined, setIsLogined]= useState(false); 
@@ -179,7 +180,9 @@ import Housingapi from './components/Pages/Housingapi';
          <Route path="/Createinvoice" element={<Createinvoice />}></Route>
          <Route path="/Addclient" element={<Addclient />}></Route>
          <Route path="/MultipleForm" element={<MultipleForm />}></Route>
-         <Route path="/followupleads/:id"  element={<Followupage/>} ></Route></>)
+         <Route path="/followupleads/:id"  element={<Followupage/>} ></Route>
+         <Route path="/ImpSchedule/:id"  element={<ImpSchedule/>} ></Route></>
+        )
          :<>
          <Route path="/login" element={<Main  lo={isLogined}/>}></Route>
          </>
