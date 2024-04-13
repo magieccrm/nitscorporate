@@ -13,28 +13,70 @@ const MyCalendar = () => {
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const localizer = momentLocalizer(moment);
+  const getCalanderData = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/get_calander_data`, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      });
+      setData(response?.data?.lead);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const GetCalandarDataByTeamLeader = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/GetCalandarDataByTeamLeader`, {
+          user_id: localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setData(responce?.data?.lead);
+    } catch (error) {
+
+      console.log(error);
+     
+    }
+  } 
+  const GetCalandarDataByUser = async () => {
+    try {
+      const responce = await axios.post(
+        `${apiUrl}/GetCalandarDataByUser`, {
+          user_id: localStorage.getItem("user_id"),
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "mongodb-url": DBuUrl,
+        }
+      }
+      );
+      setData(responce?.data?.lead);
+    } catch (error) {
+
+      console.log(error);
+     
+    }
+  }  
 
   useEffect(() => {
-    const getCalanderData = async () => {
-      try {
-        const response = await axios.get(`${apiUrl}/get_calander_data`, {
-          headers: {
-            "Content-Type": "application/json",
-            "mongodb-url": DBuUrl,
-          }
-        });
-        setData(response?.data?.lead);
-      } catch (error) {
-        const message = await error?.response?.data?.message;
-        if (message === 'Client must be connected before running operations' || message === 'Internal Server Error') {
-          getCalanderData();
-        } 
-        console.log(error);
-      }
-    };
-
-    getCalanderData();
-  }, []);
+      if (localStorage.getItem("role") === "admin") {
+      getCalanderData();
+    }
+    if (localStorage.getItem("role") === "TeamLeader") {
+      GetCalandarDataByTeamLeader();
+    }
+    if (localStorage.getItem("role") === "user") {
+      GetCalandarDataByUser();
+    }
+   
+  }, [localStorage.getItem("role")]);
     
   const aaaaa = data.map((leads) => ({
     title: (
