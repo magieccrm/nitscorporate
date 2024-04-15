@@ -119,7 +119,7 @@ function Addlead() {
         dispatch(getAllStatus());
         dispatch(getAllCountry());
         // await new Promise(resolve => setTimeout(resolve, 2000));
-        if(localStorage.getItem("role")==='admin'){
+        if(localStorage.getItem("role")==='admin'){ 
           dispatch(getAllAgent());
         }
         if(localStorage.getItem("role")==='TeamLeader'){
