@@ -7,7 +7,7 @@ import { getStatebycountry } from "../../features/getStateByCountrySlice";
 import { toast } from "react-toastify";
 import { getAllStatus } from "../../features/statusSlice";
 import { addlead } from "../../features/leadSlice";
-import { getAllAgent } from "../../features/agentSlice";
+import { getAllAgent,getAllAgentWithData } from "../../features/agentSlice";
 import axios from "axios";
 import { Button } from "bootstrap";
 
@@ -29,7 +29,13 @@ export default function ImportLead() {
     dispatch(getAllLeadSource());
     dispatch(getAllStatus());
     dispatch(getAllCountry());
-    dispatch(getAllAgent());
+    // dispatch(getAllAgent());
+    if(localStorage.getItem("role")==='admin'){ 
+      dispatch(getAllAgent());
+    }
+    if(localStorage.getItem("role")==='TeamLeader'){
+      dispatch(getAllAgentWithData({assign_to_agent:localStorage.getItem("user_id")}));
+    }
   }, []);
 
 
