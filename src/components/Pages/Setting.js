@@ -172,7 +172,9 @@ function Setting() {
     }
     }
   const editagent = async (_id,role) => {
+    setblock("contents");
     const selectedData = await agent?.agent.find((item) => item._id === _id);
+   
     setFormData(selectedData);
     if(role=='admin' || role=='TeamLeader'){
       setassigntlnone('none')
@@ -253,8 +255,9 @@ function Setting() {
 
   const setpayingcap = async () => {
     const agent_count = await agent?.agent?.length;
+   
     // console.log(hostings["0"]?.Package);
-    if (agent_count == hostings["0"]?.Package) {
+    if (agent_count === hostings["0"]?.Package) {
       setblock("none");
     } else {
       setblock("contents");
@@ -270,7 +273,7 @@ function Setting() {
 
   useEffect(() => {
     setpayingcap();
-  }, [setpayingcap]);
+  }, [agent?.agent?.length,hostings["0"]?.Package]);
 
   const handlesourceDelete = async (countryId) => {
     const confirmDelete1 = window.confirm(
@@ -2508,9 +2511,7 @@ function Setting() {
                                               <th className="sorting">
                                                Assign TeamLeader
                                               </th>
-                                              {/* <th className="sorting">
-                                                Status
-                                              </th> */}
+                                             
                                                <th className="sorting">
                                                 Action
                                               </th>
